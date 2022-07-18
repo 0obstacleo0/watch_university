@@ -30,13 +30,15 @@ def get_content(url):
 
 
 # メール送信
-def make_mail(hiroshima_lists, saitama_lists):
+def make_mail(hiroshima_lists, saitama_lists, nagasaki_lists):
     text = ""
     subject = "[大学監視君]"
     if len(hiroshima_lists) != 0:
         subject += "広島大学:{}".format(len(hiroshima_lists))
     if len(saitama_lists) != 0:
         subject += "/埼玉大学:{}".format(len(saitama_lists))
+    if len(nagasaki_lists) != 0:
+        subject += "/長崎大学:{}".format(len(nagasaki_lists))
 
     if len(hiroshima_lists) != 0:
         text += (
@@ -57,6 +59,17 @@ def make_mail(hiroshima_lists, saitama_lists):
             + "----------\n"
         )
         for l in saitama_lists:
+            text += "{}\n{}\n".format(l.title, l.url)
+            text += "----------\n"
+
+    if len(nagasaki_lists) != 0:
+        text += (
+            "########################\n"
+            + "【長崎大学】\n"
+            + "########################\n"
+            + "----------\n"
+        )
+        for l in nagasaki_lists:
             text += "{}\n{}\n".format(l.title, l.url)
             text += "----------\n"
 
@@ -147,6 +160,46 @@ def search_saitama():
     return list_article
 
 
+# 長崎大学
+def search_nagasaki():
+    list_article = []
+    try:
+        soup = get_content("http://www.cc.nagasaki-u.ac.jp/news/")
+        lists = soup.find_all(id="contents")[0].contents
+
+        for l in lists:
+
+            if l.name == "div":
+                if l.attrs["class"][0] == "news_list_box":
+                    cols = l.contents[1]
+                    date = dt.strptime(cols.contents[1].text, r"%Y年%m月%d日").replace(
+                        hour=0, minute=0, second=0, microsecond=0
+                    )
+                    url = (
+                        "http://www.cc.nagasaki-u.ac.jp"
+                        + cols.contents[9].contents[1].attrs["href"]
+                    )
+                    title = cols.contents[9].text.replace("\n", "").replace("\t", "")
+                else:
+                    continue
+            else:
+                continue
+
+            if debug_flg is False:
+                if yester_day == date:
+                    article = Article(title, url, date)
+                    list_article.append(article)
+            else:
+                article = Article(title, url, date)
+                list_article.append(article)
+
+    except:
+        global err_msg
+        err_msg += "・長崎大学\n"
+
+    return list_article
+
+
 if __name__ == "__main__":
     debug_flg = True
     err_msg = ""
@@ -156,6 +209,7 @@ if __name__ == "__main__":
 
     hiroshima_lists = search_hiroshima()
     saitama_lists = search_saitama()
+    nagasaki_lists = search_nagasaki()
 
-    if (len(hiroshima_lists) + len(saitama_lists)) != 0:
-        make_mail(hiroshima_lists)
+    if (len(hiroshima_lists) + len(saitama_lists) + len(nagasaki_lists)) != 0:
+        make_mail(hiroshima_lists, saitama_lists, nagasaki_lists)
