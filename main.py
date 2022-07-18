@@ -1,3 +1,4 @@
+from distutils.util import strtobool
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime as dt
@@ -200,7 +201,7 @@ def search_nagasaki():
 
 
 if __name__ == "__main__":
-    debug_flg = os.environ["DEBUG_FLG"]
+    debug_flg = strtobool(os.environ["DEBUG_FLG"])
     err_msg = ""
     yester_day = dt.today().replace(
         hour=0, minute=0, second=0, microsecond=0
