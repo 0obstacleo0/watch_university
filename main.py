@@ -86,7 +86,7 @@ def make_mail(hiroshima_lists, saitama_lists, nagasaki_lists):
     if subject[11:12] == "/":
         subject = subject[:11] + subject[12:]
 
-    if debug_flg is False:
+    if not debug_flg:
         mail.send_mail(subject, text)
 
 
@@ -111,7 +111,7 @@ def search_hiroshima():
                 url = l.select_one("a").get("href")
                 title = l.text
 
-            if debug_flg is False:
+            if not debug_flg:
                 if yester_day == date:
                     article = Article(title, url, date)
                     list_article.append(article)
@@ -145,7 +145,7 @@ def search_saitama():
             else:
                 continue
 
-            if debug_flg is False:
+            if not debug_flg:
                 if yester_day == date:
                     article = Article(title, url, date)
                     list_article.append(article)
@@ -185,7 +185,7 @@ def search_nagasaki():
             else:
                 continue
 
-            if debug_flg is False:
+            if not debug_flg:
                 if yester_day == date:
                     article = Article(title, url, date)
                     list_article.append(article)
