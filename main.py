@@ -200,16 +200,18 @@ def search_nagasaki():
     return list_article
 
 
-if __name__ == "__main__":
-    debug_flg = strtobool(os.environ["DEBUG_FLG"])
-    err_msg = ""
-    yester_day = dt.today().replace(
-        hour=0, minute=0, second=0, microsecond=0
-    ) + datetime.timedelta(days=-1)
-
+def run():
     hiroshima_lists = search_hiroshima()
     saitama_lists = search_saitama()
     nagasaki_lists = search_nagasaki()
 
     if (len(hiroshima_lists) + len(saitama_lists) + len(nagasaki_lists)) != 0:
         make_mail(hiroshima_lists, saitama_lists, nagasaki_lists)
+
+
+# 変数
+debug_flg = strtobool(os.environ["DEBUG_FLG"])
+err_msg = ""
+yester_day = dt.today().replace(
+    hour=0, minute=0, second=0, microsecond=0
+) + datetime.timedelta(days=-1)
