@@ -86,8 +86,7 @@ def make_mail(hiroshima_lists, saitama_lists, nagasaki_lists):
     if subject[11:12] == "/":
         subject = subject[:11] + subject[12:]
 
-    if not debug_flg:
-        mail.send_mail(subject, text)
+    mail.send_mail(subject, text)
 
 
 # 広島大学
